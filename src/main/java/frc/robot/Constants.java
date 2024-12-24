@@ -156,6 +156,7 @@ public final class Constants {
             public static final double wheelRadiusMeters = Units.inchesToMeters(kDriveWheelRadiusInches);
 
         }
+        public static final int pigeonID = 26;
     }
 
     public static class Intake {

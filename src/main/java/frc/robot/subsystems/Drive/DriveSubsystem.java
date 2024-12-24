@@ -5,8 +5,8 @@ package frc.robot.subsystems.Drive;
 
 import java.util.Optional;
 
-import com.kauailabs.navx.AHRSProtocol;
-import com.kauailabs.navx.frc.AHRS;
+import com.ctre.phoenix6.configs.Pigeon2Configuration;
+import com.ctre.phoenix6.hardware.Pigeon2;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.Constants.Drive;
 import frc.robot.subsystems.Drive.Swerve.*;
@@ -32,8 +33,7 @@ public class DriveSubsystem extends SubsystemBase {
      private final SwerveModule m_frontRightModule;
      private final SwerveModule m_backLeftModule;
      private final SwerveModule m_backRightModule;
-     private final AHRS m_navX;
-     private double m_navXoffset;
+     private final Pigeon2 m_pigeon;
      private SwerveModulePosition[] m_modulePositions;
      private final SwerveDriveOdometry m_odometry;
      private final PIDController m_pidController;
@@ -60,11 +60,7 @@ public class DriveSubsystem extends SubsystemBase {
           return m_backRightModule;
      }
 
-     public void resetGyroOffset() {   
-          // TODO: FIX (DOESN'T WORK)
-          m_navXoffset = -getHeading();
-          System.out.println("OFFSET IS " + m_navXoffset);
-     }
+     
 
      public DriveSubsystem() {
           this.m_frontLeftModule = new SwerveModule(
@@ -88,9 +84,10 @@ public class DriveSubsystem extends SubsystemBase {
                     Drive.Encoders.kBackRightSteerEncoderCANID,
                     Drive.Stats.kBackRightModuleOffsetInDegrees, false);
 
-          m_navX = new AHRS();
-          m_navXoffset = (double) m_navX.getCompassHeading();
-
+          
+          m_pigeon = new Pigeon2(Constants.Swerve.pigeonID);
+          m_pigeon.getConfigurator().apply(new Pigeon2Configuration());
+          m_pigeon.setYaw(0);
 
           m_modulePositions = new SwerveModulePosition[] {
                     new SwerveModulePosition(m_frontLeftModule.getVelocityMetersPerSecond(),
@@ -158,7 +155,7 @@ public class DriveSubsystem extends SubsystemBase {
       * updates the odometry
       */
      public void resetOdometry(Pose2d currentPose) {
-          m_odometry.resetPosition(m_navX.getRotation2d(), m_modulePositions, currentPose);
+          m_odometry.resetPosition(m_pigeon.getRotation2d(), m_modulePositions, currentPose);
      }
 
      /**
@@ -268,18 +265,18 @@ public class DriveSubsystem extends SubsystemBase {
      }
 
      /**
-      * gets the angle of the navx
+      * gets the angle of the pigeon
       */
      public Rotation2d getGyroAngleInRotation2d() {
           return Rotation2d.fromDegrees(getHeading());
      }
 
      public double getHeading() {
-          double angleWithOffset = (double) m_navX.getFusedHeading() + m_navXoffset;
-          // Bigger than 360: angleWithOffset - 360
-          // Smaller than 0: angleWithOffset + 360
-          return (angleWithOffset > 360) ? angleWithOffset - 360
-                    : (angleWithOffset < 0) ? angleWithOffset + 360 : angleWithOffset;
+          return m_pigeon.getYaw().getValueAsDouble();
+     }
+
+     public void resetGyroOffset(){
+          m_pigeon.setYaw(0);
      }
 
      /**
@@ -305,7 +302,7 @@ public class DriveSubsystem extends SubsystemBase {
           m_pidController.setI(SmartDashboard.getNumber("Turn To angle I", Drive.PID.kI));
 
 
-          SmartDashboard.putNumber("absolute compass headeing", m_navX.getCompassHeading());
+          SmartDashboard.putNumber("absolute compass headeing", m_pigeon.getYaw().getValueAsDouble());
           // m_frontLeftModule.setModuleState(states[0]);
           // m_frontRightModule.setModuleState(states[1]);
           // m_backLeftModule.setModuleState(states[2]);

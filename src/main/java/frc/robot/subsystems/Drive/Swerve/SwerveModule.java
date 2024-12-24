@@ -223,11 +223,6 @@ public class SwerveModule extends SubsystemBase {
         return (mpsValue / (2 * Math.PI * Swerve.Stats.wheelRadiusMeters)) * 60;
     }
 
-    // //feels like something that should be here.
-    // public void resetOdometry() {
-    // m_odometry.resetPosition(m_navX.getRotation2d(), m_modulePositions,
-    // m_currentPose);
-    // }
 
     /**
      * Convertion from Meters per second to rounds per second
