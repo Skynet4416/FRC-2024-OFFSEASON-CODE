@@ -1,0 +1,201 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 0.6339736895998008,
+        "y": 7.004798511021523
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.4993411183403562,
+        "y": 7.472564688719121
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.8501657516135543,
+        "y": 7.68305946868304
+      },
+      "prevControl": {
+        "x": 1.3005404928188775,
+        "y": 7.6713653142406
+      },
+      "nextControl": {
+        "x": 2.3457952280653505,
+        "y": 7.693604776692652
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.832474724778509,
+        "y": 7.004798511021523
+      },
+      "prevControl": {
+        "x": 2.600894815478903,
+        "y": 7.167530339178002
+      },
+      "nextControl": {
+        "x": 3.265158439148787,
+        "y": 6.700750495518085
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.8501657516135543,
+        "y": 7.68305946868304
+      },
+      "prevControl": {
+        "x": 1.840323404360306,
+        "y": 7.627181940572927
+      },
+      "nextControl": {
+        "x": 1.8600080988668026,
+        "y": 7.738936996793153
+      },
+      "isLocked": false,
+      "linkedName": "waypoint1"
+    },
+    {
+      "anchor": {
+        "x": 3.814783697943464,
+        "y": 7.004798511021523
+      },
+      "prevControl": {
+        "x": 3.1032581263880474,
+        "y": 6.874026331385995
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "putting node in amp",
+      "waypointRelativePos": 1.0,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "AmpAngle"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "PlaceInAmp"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "picking up node",
+      "waypointRelativePos": 2.1,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "FloorIntake"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "IntakeSpinUp"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "putting node in amp 2",
+      "waypointRelativePos": 3.0,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "AmpAngle"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "PlaceInAmp"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "move to drive mode",
+      "waypointRelativePos": 1.3,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "DrivePlace"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "move to drive mode 2",
+      "waypointRelativePos": 2.5,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "DrivePlace"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": null,
+  "previewStartingState": null,
+  "useDefaultConstraints": false
+}
