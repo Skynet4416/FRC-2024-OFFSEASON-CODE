@@ -244,6 +244,9 @@ public class DriveSubsystem extends SubsystemBase {
 
           SwerveModuleState[] target_states = Drive.Stats.kinematics.toSwerveModuleStates(this.m_swerveSpeeds);
           setModulesStates(target_states);
+          System.out.println("xVelocity-"+xVelocityMps);
+          System.out.println("yVelocity-"+yVelocityMps);
+          System.out.println("rotation-"+rotationVelocityRps);
      }
 
      public void setAllModulesToZero() {
@@ -268,7 +271,7 @@ public class DriveSubsystem extends SubsystemBase {
       * gets the angle of the pigeon
       */
      public Rotation2d getGyroAngleInRotation2d() {
-          return Rotation2d.fromDegrees(getHeading());
+          return Rotation2d.fromDegrees(-getHeading());
      }
 
      public double getHeading() {

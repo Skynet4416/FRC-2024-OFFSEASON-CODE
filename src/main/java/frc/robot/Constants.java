@@ -24,38 +24,6 @@ import edu.wpi.first.math.util.Units;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-    public static class Arm {
-        public static class Motors {
-            public static final int kLeftMotorID = 22;
-            public static final int kRightMotorID = 21;
-        }
-
-        public static class Stats {
-            public static final double kLimitAngle = 90;
-            //todo put actual angles and then it will do the thing
-            public static final double encoderOffset = 225;
-            public static final double gearRatio = 1 / 25.0;
-            public static final double ampAngle = 70;
-            public static final double speakerAngle = 5;
-            public static final double driveAngle = 40;
-            public static final double kThreashold = 0;
-            public static final double kIntakeAngle = 5;
-            public static final double climbAngle = 0;
-
-        }
-
-        public static class Encoders {
-            public static final int kLeftEncoderID = 0;
-            public static final int kRightEncoderID = 0;
-        }
-
-        public static class Pid {
-            public static final double kP = 0.1;
-            public static final double kI = 0;
-            public static final double kD = 0.1;
-        }
-
-    }
 
     public static class Swerve {
 
@@ -173,62 +141,6 @@ public final class Constants {
             ;
             public static final double kPushingNodeInRounds = 1;
             public static final double kShooterSpeed = -0.05;
-        }
-    }
-
-    public static class Shooter {
-        public static class Motors {
-            public static final int ShooterMotorLeftID = 32;
-            public static final int ShooterMotorRightID = 33;
-
-        }
-
-        public static class Stats {
-            // todo: set the speed needed
-            public static final double kIShooterSpeed = 0.0;
-            public static final double kPutInAmpSpeed = 0.0;
-        }
-
-        public static class PID {
-            public static final double kP = 0.1;
-            public static final double kI = 0.000;
-            public static final double kD = 0;
-        }
-    }
-
-    public static class Climber {
-        public static class PID {
-            // todo: set actual numbers
-            public static final double kP = 0;
-            public static final double kI = 0;
-            public static final double kD = 0;
-        }
-
-        public static class Motors {
-            public static final int kRightHookMotorID = 0;
-            public static final int kLeftHookMotorID = 0;
-        }
-
-        public static class Stats {
-            // the meters the climber gains when "open"
-            public static final double kHeightChangeInMeters = 0.0;
-            public static final double kMaxHeightInMeters = 0.0;
-            // todo: change to actual numbers of stuff
-            // the length we want the climber to climb (i think this is the addition to the
-            // peropened telescope)
-            public static final double kDesiredLength = 0.0;
-            public static final double kSpoolCircumference = 0.0;
-            // timsoret
-            public static final double kGearRatio = 0.0;
-            // the rounds the motor needs to do = length we want the climb to go/the
-            // circumference of the spool*gear ratio
-            public static final double kExtensionTurnsInRounds = kDesiredLength / kSpoolCircumference * kGearRatio;
-            // the time it takes the telescop to extend at the chosen speed
-            public static final long kExtendTimeMS = 0;
-            // the time it takes the telescop to retract at the chosen speed
-            public static final long kRetractTimeMS = 0;
-            public static final double kThreashold = 0;
-            public static final double kRetractInRounds = 4;
         }
     }
 

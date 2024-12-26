@@ -22,8 +22,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.Drive.DriveCommand;
 import frc.robot.commands.Drive.ResetGyroCommand;
 import frc.robot.InRangeObserver;
-import frc.robot.Constants.Arm;
-import frc.robot.Constants.Intake;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -100,8 +98,7 @@ public class RobotContainer {
                 oi.xboxController::getRightX,
                 oi.xboxController::getLeftTriggerAxis));
 
-        // oi.commandXboxController.a()
-        // .whileTrue(new ParallelCommandGroup(new ArmCommand(m_ArmSubsystem,
+        oi.commandXboxController.a().whileTrue(new ResetGyroCommand(m_driveSubsystem));
         // Arm.Stats.kIntakeAngle),
         // new IntakeNodeCommand(m_IntakeSubsystem, m_ShooterSubsystem)));
 
