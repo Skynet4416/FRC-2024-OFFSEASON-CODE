@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 package frc.robot.subsystems.Drive;
-
+     
 import java.util.Optional;
 
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
@@ -24,7 +24,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.Constants.Drive;
+import frc.robot.Constants.Swerve.PID.ApriltagDrive;
 import frc.robot.subsystems.Drive.Swerve.*;
+import frc.robot.subsystems.Vision.Limelight.LimelightSubsystem;
 
 public class DriveSubsystem extends SubsystemBase {
      // https://github.com/CrossTheRoadElec/Phoenix6-Examples/tree/main/java/SwerveWithPathPlanner
@@ -37,6 +39,7 @@ public class DriveSubsystem extends SubsystemBase {
      private SwerveModulePosition[] modulePositions;
      private final SwerveDriveOdometry odometry;
      private final PIDController pidController;
+     private static PIDController PIDControllerArrive;
      private ChassisSpeeds swerveSpeeds;
      private Pose2d lastPose;
      private Pose2d currentPose;
@@ -115,9 +118,10 @@ public class DriveSubsystem extends SubsystemBase {
 
           SmartDashboard.putNumber("Turn To angle I", Drive.PID.kI);
           SmartDashboard.putNumber("Turn To angle P", Drive.PID.kP);
-
+          
+          PIDControllerArrive = new PIDController(ApriltagDrive.kP ,ApriltagDrive.kI ,ApriltagDrive.kP);
      }
-
+ 
      /**
       * Sets the state of all of the swerve modules
       * 
@@ -312,7 +316,10 @@ public class DriveSubsystem extends SubsystemBase {
           // m_backRightModule.setModuleState(states[3]);
 
      }
-
+     public double calculateArrivalSpeedWithPID(double distance){
+          return PIDControllerArrive.calculate(distance);
+     }
+     
      @Override
      public void simulationPeriodic() {
           // This method will be called once per scheduler run during simulation

@@ -41,11 +41,8 @@ public class GoToAprilTagCommand extends Command {
             double distanceX = botPose[0];
             double distanceY = botPose[1];
             double rotationNeeded = botPose[5];
-            // PID proportional gain ? 
-            // double kP = 0.1; // ! DO NOT USE IN PRODUCTION, THIS VALUE HAS NOT BEEN TESTED -Nordy
-            // double speedX =  distanceX * 0.1;
-            // double speedY = distanceY * 0.1;
-            // driveSubsystem.setModules(x, y, rotation, this.speedmodSupplier.getAsDouble());
+            // added -1 to stop 1 meter away from the apriltag
+            driveSubsystem.setModules(this.driveSubsystem.calculateArrivalSpeedWithPID(distanceX-1) ,this,driveSubsystem.calculateArrivalSpeedWithPID(distanceY-1), rotation, this.speedmodSupplier.getAsDouble());            
         }
     }
 
