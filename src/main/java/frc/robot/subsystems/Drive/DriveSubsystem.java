@@ -24,7 +24,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.Constants.Drive;
-import frc.robot.Constants.Swerve.PID.ApriltagDrive;
+import frc.robot.Constants.Swerve.PID.ApriltagDriveX;
+import frc.robot.Constants.Swerve.PID.ApriltagDriveY;
 import frc.robot.subsystems.Drive.Swerve.*;
 import frc.robot.subsystems.Vision.Limelight.LimelightSubsystem;
 
@@ -39,7 +40,8 @@ public class DriveSubsystem extends SubsystemBase {
      private SwerveModulePosition[] modulePositions;
      private final SwerveDriveOdometry odometry;
      private final PIDController pidController;
-     private static PIDController PIDControllerArrive;
+     private static PIDController PIDControllerArriveX;
+     private static PIDController PIDControllerArriveY;
      private ChassisSpeeds swerveSpeeds;
      private Pose2d lastPose;
      private Pose2d currentPose;
@@ -119,7 +121,8 @@ public class DriveSubsystem extends SubsystemBase {
           SmartDashboard.putNumber("Turn To angle I", Drive.PID.kI);
           SmartDashboard.putNumber("Turn To angle P", Drive.PID.kP);
           
-          PIDControllerArrive = new PIDController(ApriltagDrive.kP ,ApriltagDrive.kI ,ApriltagDrive.kP);
+          PIDControllerArriveX = new PIDController(ApriltagDriveX.kP ,ApriltagDriveX.kI ,ApriltagDriveX.kP);
+          PIDControllerArriveY = new PIDController(ApriltagDriveY.kP ,ApriltagDriveY.kI ,ApriltagDriveY.kP);
      }
  
      /**
@@ -316,8 +319,11 @@ public class DriveSubsystem extends SubsystemBase {
           // m_backRightModule.setModuleState(states[3]);
 
      }
-     public double calculateArrivalSpeedWithPID(double distance){
-          return PIDControllerArrive.calculate(distance);
+     public double calculateArrivalSpeedWithXPID(double distanceX){
+          return PIDControllerArriveX.calculate(distanceX);
+     }
+     public double calculateArrivalSpeedWithYPID(double distanceY){
+          return PIDControllerArriveY.calculate(distanceY);
      }
      
      @Override

@@ -42,7 +42,7 @@ public class GoToAprilTagCommand extends Command {
             double distanceY = botPose[1];
             double rotationNeeded = botPose[5];
             // added -1 to stop 1 meter away from the apriltag
-            driveSubsystem.setModules(this.driveSubsystem.calculateArrivalSpeedWithPID(distanceX-1) ,this,driveSubsystem.calculateArrivalSpeedWithPID(distanceY-1), rotation, this.speedmodSupplier.getAsDouble());            
+            driveSubsystem.setModules(this.driveSubsystem.calculateArrivalSpeedWithXPID(distanceX-1) ,this,driveSubsystem.calculateArrivalSpeedWithYPID(distanceY-1), rotation, this.speedmodSupplier.getAsDouble());            
         }
     }
 
