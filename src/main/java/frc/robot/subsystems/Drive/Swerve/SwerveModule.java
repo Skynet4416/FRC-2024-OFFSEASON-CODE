@@ -159,7 +159,6 @@ public class SwerveModule extends SubsystemBase {
     public double getTargetRotorVelocityRPM() {
         return this.m_targetRotorVelocity;
     }
-
     /**
      * @param target_velocity
      *                        The target velocity in meters per second
