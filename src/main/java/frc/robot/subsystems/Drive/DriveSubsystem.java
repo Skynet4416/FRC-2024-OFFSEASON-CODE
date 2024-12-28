@@ -25,8 +25,9 @@ import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.Constants.Drive;
 import frc.robot.subsystems.Drive.Swerve.*;
+import frc.robot.subsystems.Vision.Limelight.LimelightObserver;
 
-public class DriveSubsystem extends SubsystemBase {
+public class DriveSubsystem extends SubsystemBase implements LimelightObserver {
      // https://github.com/CrossTheRoadElec/Phoenix6-Examples/tree/main/java/SwerveWithPathPlanner
      // https://github.com/CrossTheRoadElec/SwerveDriveExample/blob/main/src/main/java/frc/robot/CTRSwerve/CTRSwerveModule.java
      private final SwerveModule frontLeftModule;
@@ -316,5 +317,14 @@ public class DriveSubsystem extends SubsystemBase {
      @Override
      public void simulationPeriodic() {
           // This method will be called once per scheduler run during simulation
+     }
+
+     @Override
+     public void onLimelightDataUpdate(boolean targetVisible, double[] botPose) {
+          
+          double x = botPose[0];
+          double y = botPose[1];
+          double rotationRadians = botPose[2];
+          currentPose = new Pose2d(x, y, new Rotation2d(rotationRadians));
      }
 }
