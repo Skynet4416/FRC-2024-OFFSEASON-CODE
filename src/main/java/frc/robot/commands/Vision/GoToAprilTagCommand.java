@@ -47,7 +47,7 @@ public class GoToAprilTagCommand extends Command {
             // double speedY = distanceY * 0.1;
             
         
-            driveSubsystem.setModules(x,y,yawRotationNeededInDegrees, this.speedmodSupplier.getAsDouble());
+            driveSubsystem.setModules(x,y,this.driveSubsystem.calculateYawRotationInPID(yawRotationNeededInDegrees), this.speedmodSupplier.getAsDouble());
         }
     }
 
