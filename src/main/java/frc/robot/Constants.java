@@ -92,7 +92,30 @@ public final class Constants {
             
                 public static final double kD = 0.0;
             }
+
+            
+        public static class RotateToAprilTag {
+                        /**
+             * Proportional tuning - error
+             */
+            public static final double kP = 10.0;
+            /**
+             * Integral tuning - learning
+             */
+            public static final double kI = 1.0;
+            /**
+             * Derivative tuning - overshoot
+             */
+            public static final double kD = 0.0;
+
         }
+
+        
+        }
+
+
+
+
 
         public static class Stats {
             // todo: change to the actual ratio of the neo vortex
