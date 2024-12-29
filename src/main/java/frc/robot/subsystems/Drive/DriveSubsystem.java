@@ -40,6 +40,7 @@ public class DriveSubsystem extends SubsystemBase implements LimelightObserver {
      private final PIDController pidController;
      private ChassisSpeeds swerveSpeeds;
      private Pose2d lastPose;
+     private Pose2d updatePose;
      private Pose2d currentPose;
      private SwerveDrivePoseEstimator poseEstimator;
      private double targetAngle;
@@ -321,10 +322,9 @@ public class DriveSubsystem extends SubsystemBase implements LimelightObserver {
 
      @Override
      public void onLimelightDataUpdate(boolean targetVisible, double[] botPose) {
-          
           double x = botPose[0];
           double y = botPose[1];
           double rotationRadians = botPose[2];
-          Pose2d updatePose = new Pose2d(x, y, new Rotation2d(rotationRadians));
+          updatePose = new Pose2d(x, y, new Rotation2d(rotationRadians));
      }
 }
