@@ -4,6 +4,7 @@
 
 package frc.robot.commands.Vision;
 
+import java.sql.Driver;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -42,6 +43,8 @@ public class GoToAprilTagCommand extends Command {
             double distanceY = botPose[1];
             double rotationNeeded = botPose[5];
             // added -1 to stop 1 meter away from the apriltag
+            driveSubsystem.setSetpointArrivalX(distanceX);
+            driveSubsystem.setSetpointArrivalY(distanceY);
             driveSubsystem.setModules(this.driveSubsystem.calculateArrivalSpeedWithXPID(distanceX-1) ,this,driveSubsystem.calculateArrivalSpeedWithYPID(distanceY-1), rotation, this.speedmodSupplier.getAsDouble());            
         }
     }

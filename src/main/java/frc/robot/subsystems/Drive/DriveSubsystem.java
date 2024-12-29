@@ -318,16 +318,23 @@ public class DriveSubsystem extends SubsystemBase {
           // m_backLeftModule.setModuleState(states[2]);
           // m_backRightModule.setModuleState(states[3]);
 
+     
+     }
+     public void setSetpointArrivalX(double distanceX)
+     {
+          this.PIDControllerArriveX.setSetpoint(distanceX);
+     }
+     public void setSetpointArrivalY(double distanceY)
+     {
+          this.PIDControllerArriveY.setSetpoint(distanceY);
      }
      public double calculateArrivalSpeedWithXPID(double distanceX){
-          this.PIDControllerArriveX.setSetpoint(distanceX);
           return PIDControllerArriveX.calculate(distanceX);
      }
      public double calculateArrivalSpeedWithYPID(double distanceY){
-          this.PIDControllerArriveY.setSetpoint(distanceY);
           return PIDControllerArriveY.calculate(distanceY);
      }
-     
+
      @Override
      public void simulationPeriodic() {
           // This method will be called once per scheduler run during simulation
