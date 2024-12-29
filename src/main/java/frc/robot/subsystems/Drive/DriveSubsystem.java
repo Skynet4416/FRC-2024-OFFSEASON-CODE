@@ -332,7 +332,7 @@ public class DriveSubsystem extends SubsystemBase {
           return PIDControllerArriveX.calculate(distanceX);
      }
      public double calculateArrivalSpeedWithYPID(double distanceY){
-          return PIDControllerArriveY.calculate(distanceY);
+          return PIDControllerArriveY.calculate(distanceYY);
      }
 
      @Override

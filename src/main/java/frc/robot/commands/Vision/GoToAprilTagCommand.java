@@ -31,6 +31,8 @@ public class GoToAprilTagCommand extends Command {
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
+        driveSubsystem.setSetpointArrivalX(1);
+        driveSubsystem.setSetpointArrivalY(1);
         this.targetVisible = false;
         this.botPose = new double[6];
     }
@@ -45,7 +47,7 @@ public class GoToAprilTagCommand extends Command {
             // added -1 to stop 1 meter away from the apriltag
             driveSubsystem.setSetpointArrivalX(distanceX);
             driveSubsystem.setSetpointArrivalY(distanceY);
-            driveSubsystem.setModules(this.driveSubsystem.calculateArrivalSpeedWithXPID(distanceX-1) ,this,driveSubsystem.calculateArrivalSpeedWithYPID(distanceY-1), rotation, this.speedmodSupplier.getAsDouble());            
+            driveSubsystem.setModules(this.driveSubsystem.calculateArrivalSpeedWithXPID(distanceX) ,this,driveSubsystem.calculateArrivalSpeedWithYPID(distanceY), rotation, this.speedmodSupplier.getAsDouble());            
         }
     }
 
