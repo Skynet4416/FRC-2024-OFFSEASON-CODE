@@ -320,9 +320,11 @@ public class DriveSubsystem extends SubsystemBase {
 
      }
      public double calculateArrivalSpeedWithXPID(double distanceX){
+          this.PIDControllerArriveX.setSetpoint(distanceX);
           return PIDControllerArriveX.calculate(distanceX);
      }
      public double calculateArrivalSpeedWithYPID(double distanceY){
+          this.PIDControllerArriveY.setSetpoint(distanceY);
           return PIDControllerArriveY.calculate(distanceY);
      }
      
