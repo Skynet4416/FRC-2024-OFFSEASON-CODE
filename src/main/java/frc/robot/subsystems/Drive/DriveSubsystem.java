@@ -111,7 +111,7 @@ public class DriveSubsystem extends SubsystemBase {
           pidController = new PIDController(Drive.PID.kP, Drive.PID.kI, Drive.PID.kD);
           
           //creates a pid controller for steering  
-          pidControllerRotation = new PIDController(PID.Steer.kP, PID.Steer.kI, PID.Steer.kD);
+          pidControllerRotation = new PIDController(PID.RotateToAprilTag.kP, PID.RotateToAprilTag.kI, PID.RotateToAprilTag.kD);
 
           pidController.enableContinuousInput(0, 360);
           poseEstimator = new SwerveDrivePoseEstimator(Drive.Stats.kinematics, getGyroAngleInRotation2d(),
@@ -288,6 +288,9 @@ public class DriveSubsystem extends SubsystemBase {
           pigeon.setYaw(0);
      }
 
+     public void yawRotationPIDSetPoint(double desiredAngle){
+          pidControllerRotation.setSetpoint(desiredAngle);
+     }
      public double calculateYawRotationInPID(double yawRotationNeededInDegrees){
           return pidControllerRotation.calculate(yawRotationNeededInDegrees);
      }
