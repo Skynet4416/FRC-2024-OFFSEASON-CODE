@@ -33,17 +33,17 @@ public class SwerveModule extends SubsystemBase {
     // https://pro.docs.ctr-electronics.com/en/latest/docs/migration/migration-guide/closed-loop-guide.html
     // https://docs.wpilib.org/en/stable/docs/software/advanced-controls/controllers/trapezoidal-profiles.html
 
-    private final CANSparkFlex m_driveMotor;
-    private final TalonFX m_steerMotor;
-    private final CANcoder m_steerEncoder;
-    private final PositionVoltage m_voltagePosition;
+    private final CANSparkFlex driveMotor;
+    private final TalonFX steerMotor;
+    private final CANcoder steerEncoder;
+    private final PositionVoltage voltagePosition;
 
-    private SwerveModuleState m_moduleState; // current state of the module without steer offset
-    private SwerveModuleState m_targetState;
-    private double m_moduleOffset;
-    private boolean m_isReversed;
+    private SwerveModuleState moduleState; // current state of the module without steer offset
+    private SwerveModuleState targetState;
+    private double moduleOffset;
+    private boolean isReversed;
 
-    private double m_targetRotorVelocity = 0;
+    private double targetRotorVelocity = 0;
 
     /**
      * @param driveMotorCANID
@@ -59,15 +59,15 @@ public class SwerveModule extends SubsystemBase {
      */
     public SwerveModule(int driveMotorCANID, int steerMotorCANID, int steerEncoderCANID, double moduleOffsetInDegrees,
             boolean isReversed) {
-        this.m_driveMotor = new CANSparkFlex(driveMotorCANID, CANSparkLowLevel.MotorType.kBrushless);
-        this.m_steerMotor = new TalonFX(steerMotorCANID);
-        this.m_steerEncoder = new CANcoder(steerEncoderCANID);
+        this.driveMotor = new CANSparkFlex(driveMotorCANID, CANSparkLowLevel.MotorType.kBrushless);
+        this.steerMotor = new TalonFX(steerMotorCANID);
+        this.steerEncoder = new CANcoder(steerEncoderCANID);
 
-        this.m_voltagePosition = new PositionVoltage(0, 0, false, 0, 0, false, false, false);
-        this.m_moduleState = new SwerveModuleState(0, Rotation2d.fromDegrees(0));
+        this.voltagePosition = new PositionVoltage(0, 0, false, 0, 0, false, false, false);
+        this.moduleState = new SwerveModuleState(0, Rotation2d.fromDegrees(0));
 
-        this.m_moduleOffset = moduleOffsetInDegrees;
-        this.m_isReversed = isReversed;
+        this.moduleOffset = moduleOffsetInDegrees;
+        this.isReversed = isReversed;
 
         configMotors(steerEncoderCANID);
         setBreak();
@@ -124,17 +124,17 @@ public class SwerveModule extends SubsystemBase {
         ClosedLoopGeneralConfigs talonConfigs = new ClosedLoopGeneralConfigs();
         talonConfigs.ContinuousWrap = true;
 
-        this.m_driveMotor.restoreFactoryDefaults();
+        this.driveMotor.restoreFactoryDefaults();
 
-        this.m_driveMotor.getPIDController().setP(Swerve.PID.Drive.kP);
-        this.m_driveMotor.getPIDController().setI(Swerve.PID.Drive.kI);
-        this.m_driveMotor.getPIDController().setD(Swerve.PID.Drive.kD);
-        this.m_driveMotor.setInverted(m_isReversed);
+        this.driveMotor.getPIDController().setP(Swerve.PID.Drive.kP);
+        this.driveMotor.getPIDController().setI(Swerve.PID.Drive.kI);
+        this.driveMotor.getPIDController().setD(Swerve.PID.Drive.kD);
+        this.driveMotor.setInverted(isReversed);
 
-        this.m_driveMotor.getPIDController().setSmartMotionMaxVelocity(Drive.Stats.kMaxDriveMotorRPM*Drive.Stats.kDriveEfficiency, 0);
-        this.m_driveMotor.getPIDController().setSmartMotionMaxAccel(Drive.Stats.kMaxDriveAccelRPM,0);
+        this.driveMotor.getPIDController().setSmartMotionMaxVelocity(Drive.Stats.kMaxDriveMotorRPM*Drive.Stats.kDriveEfficiency, 0);
+        this.driveMotor.getPIDController().setSmartMotionMaxAccel(Drive.Stats.kMaxDriveAccelRPM,0);
 
-        this.m_driveMotor.setSmartCurrentLimit(50);
+        this.driveMotor.setSmartCurrentLimit(50);
         
         // current theory is that sparkFlex doesn't need configs. but that just a
         // theory.
@@ -145,27 +145,27 @@ public class SwerveModule extends SubsystemBase {
         // this.m_driveMotor.getConfigurator().apply(slot0DriveConfigs);
         // this.m_driveMotor.getConfigurator().apply(driveFeedbackConfigs);
 
-        this.m_steerMotor.getConfigurator().apply(voltageConfigs);
-        this.m_steerMotor.getConfigurator().apply(statorConfigs);
-        this.m_steerMotor.getConfigurator().apply(steerFeedbackConfigs);
-        this.m_steerMotor.getConfigurator().apply(slot0SteerConfigs);
-        this.m_steerMotor.getConfigurator().apply(talonConfigs);
-        this.m_steerMotor.setInverted(true);
+        this.steerMotor.getConfigurator().apply(voltageConfigs);
+        this.steerMotor.getConfigurator().apply(statorConfigs);
+        this.steerMotor.getConfigurator().apply(steerFeedbackConfigs);
+        this.steerMotor.getConfigurator().apply(slot0SteerConfigs);
+        this.steerMotor.getConfigurator().apply(talonConfigs);
+        this.steerMotor.setInverted(true);
 
-        this.m_steerEncoder.getConfigurator().apply(sensorConfigs);
+        this.steerEncoder.getConfigurator().apply(sensorConfigs);
 
     }
 
     public double getTargetRotorVelocityRPM() {
-        return this.m_targetRotorVelocity;
+        return this.targetRotorVelocity;
     }
     /**
      * @param target_velocity
      *                        The target velocity in meters per second
      */
     public void setModuleVelocity(double target_velocity) {
-        this.m_targetRotorVelocity = mpsToRps(target_velocity) * 60 * Swerve.Stats.kRotorToSensorRatioDrive;
-        this.m_driveMotor.getPIDController().setReference(m_targetRotorVelocity, ControlType.kSmartVelocity);
+        this.targetRotorVelocity = mpsToRps(target_velocity) * 60 * Swerve.Stats.kRotorToSensorRatioDrive;
+        this.driveMotor.getPIDController().setReference(targetRotorVelocity, ControlType.kSmartVelocity);
     }
 
     /**
@@ -173,11 +173,11 @@ public class SwerveModule extends SubsystemBase {
      *                       The target angle in degrees of the module
      */
     public void setModuleAngle(double target_degrees) {
-        this.m_steerMotor.setControl(this.m_voltagePosition.withPosition((this.m_moduleOffset + target_degrees) / 360));
+        this.steerMotor.setControl(this.voltagePosition.withPosition((this.moduleOffset + target_degrees) / 360));
     }
 
     public SwerveModuleState getTargetState() {
-        return m_targetState;
+        return targetState;
     }
 
     /**
@@ -187,10 +187,10 @@ public class SwerveModule extends SubsystemBase {
     public void setModuleState(SwerveModuleState state) {
         // state = SwerveModuleState.optimize(state,
         //         Rotation2d.fromDegrees(this.getSteerAngle().getDegrees()));
-        m_targetState = state;
+        targetState = state;
         setModuleVelocity(state.speedMetersPerSecond);
-        this.m_steerMotor
-                .setControl(this.m_voltagePosition.withPosition((m_moduleOffset + state.angle.getDegrees()) / 360));
+        this.steerMotor
+                .setControl(this.voltagePosition.withPosition((moduleOffset + state.angle.getDegrees()) / 360));
     }
 
     /**
@@ -234,41 +234,41 @@ public class SwerveModule extends SubsystemBase {
     }
 
     public Rotation2d getSteerAngle() {
-        return this.m_moduleState.angle;
+        return this.moduleState.angle;
     }
 
     public void setCoast() {
-        m_driveMotor.setIdleMode(IdleMode.kCoast);
-        m_steerMotor.setNeutralMode(NeutralModeValue.Coast);
+        driveMotor.setIdleMode(IdleMode.kCoast);
+        steerMotor.setNeutralMode(NeutralModeValue.Coast);
     }
 
     public void setBreak() {
-        m_driveMotor.setIdleMode(IdleMode.kBrake);
-        m_steerMotor.setNeutralMode(NeutralModeValue.Brake);
+        driveMotor.setIdleMode(IdleMode.kBrake);
+        steerMotor.setNeutralMode(NeutralModeValue.Brake);
     }
 
     public CANSparkFlex getDriveMotor() {
-        return this.m_driveMotor;
+        return this.driveMotor;
     }
 
     public TalonFX getSteerMotor() {
-        return this.m_steerMotor;
+        return this.steerMotor;
     }
 
     public double getDriveDistance() {
-        return roundsToMeters((Double) this.m_driveMotor.getEncoder().getPosition());
+        return roundsToMeters((Double) this.driveMotor.getEncoder().getPosition());
     }
 
     public CANcoder getSteerEncoder() {
-        return this.m_steerEncoder;
+        return this.steerEncoder;
     }
 
     public double getVelocityMetersPerSecond() {
-        return this.m_moduleState.speedMetersPerSecond;
+        return this.moduleState.speedMetersPerSecond;
     }
 
     public SwerveModuleState getModuleState() {
-        return this.m_moduleState;
+        return this.moduleState;
     }
 
     /**
@@ -277,7 +277,7 @@ public class SwerveModule extends SubsystemBase {
      *              1.0.
      */
     public void setDriveMotor(double speed) {
-        this.m_driveMotor.set(speed);
+        this.driveMotor.set(speed);
     }
 
     /**
@@ -286,17 +286,17 @@ public class SwerveModule extends SubsystemBase {
      *              1.0.
      */
     public void setSteerMotor(double speed) {
-        this.m_steerMotor.set(speed);
+        this.steerMotor.set(speed);
     }
 
     @Override
     public void periodic() { // todo logs needed - ShuffleBoard
         // System.out.println(this.m_moduleState.angle);
-        this.m_moduleState.angle = Rotation2d
-                .fromDegrees(this.m_steerEncoder.getAbsolutePosition().getValue() * 360 - m_moduleOffset);
+        this.moduleState.angle = Rotation2d
+                .fromDegrees(this.steerEncoder.getAbsolutePosition().getValue() * 360 - moduleOffset);
         // the function get() returns the speed in percentages, this is kinda ugly but
         // it might work
-        this.m_moduleState.speedMetersPerSecond = rpmToMps((Double) this.m_driveMotor.get() * 60);
+        this.moduleState.speedMetersPerSecond = rpmToMps((Double) this.driveMotor.get() * 60);
     }
 
     @Override

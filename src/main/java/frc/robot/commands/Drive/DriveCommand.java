@@ -10,12 +10,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 
 /** An example command that uses an example subsystem. */
 public class DriveCommand extends Command {
-    private final DriveSubsystem m_driveSubsystem;
-    private final DoubleSupplier m_xDoubleSupplier;
-    private final DoubleSupplier m_yDoubleSupplier;
-    private final DoubleSupplier m_rotationDoubleSupplier;
-    private boolean m_isConstantSpeed;
-    private DoubleSupplier m_speedmodSupplier;
+    private final DriveSubsystem driveSubsystem;
+    private final DoubleSupplier xDoubleSupplier;
+    private final DoubleSupplier yDoubleSupplier;
+    private final DoubleSupplier rotationDoubleSupplier;
+    private boolean isConstantSpeed;
+    private DoubleSupplier speedmodSupplier;
 
     /**
      * Creates a new ExampleCommand.
@@ -24,11 +24,11 @@ public class DriveCommand extends Command {
      */
     public DriveCommand(DriveSubsystem driveSubsystem, DoubleSupplier xValue, DoubleSupplier yValue,
             DoubleSupplier rotationValue) {
-        this.m_driveSubsystem = driveSubsystem;
-        this.m_xDoubleSupplier = xValue;
-        this.m_yDoubleSupplier = yValue;
-        this.m_rotationDoubleSupplier = rotationValue;
-        this.m_isConstantSpeed = false;
+        this.driveSubsystem = driveSubsystem;
+        this.xDoubleSupplier = xValue;
+        this.yDoubleSupplier = yValue;
+        this.rotationDoubleSupplier = rotationValue;
+        this.isConstantSpeed = false;
 
         addRequirements(driveSubsystem);
     }
@@ -40,11 +40,11 @@ public class DriveCommand extends Command {
      */
     public DriveCommand(DriveSubsystem driveSubsystem, DoubleSupplier xValue, DoubleSupplier yValue,
             DoubleSupplier rotationValue, DoubleSupplier speedmodValue) {
-        this.m_driveSubsystem = driveSubsystem;
-        this.m_xDoubleSupplier = xValue;
-        this.m_yDoubleSupplier = yValue;
-        this.m_rotationDoubleSupplier = rotationValue;
-        this.m_speedmodSupplier = speedmodValue;
+        this.driveSubsystem = driveSubsystem;
+        this.xDoubleSupplier = xValue;
+        this.yDoubleSupplier = yValue;
+        this.rotationDoubleSupplier = rotationValue;
+        this.speedmodSupplier = speedmodValue;
         
         addRequirements(driveSubsystem);
     }
@@ -63,17 +63,17 @@ public class DriveCommand extends Command {
 
     @Override
     public void execute() {
-        m_driveSubsystem.setModules( 
-                correctJoystickDrift(m_yDoubleSupplier.getAsDouble()) * Drive.Stats.kMaxVelocityMetersPerSecond,
-                correctJoystickDrift(m_xDoubleSupplier.getAsDouble()) * Drive.Stats.kMaxVelocityMetersPerSecond,
-                correctJoystickDrift(m_rotationDoubleSupplier.getAsDouble())
-                        * Drive.Stats.kMaxAngularVelocityRadiansPerSecond, m_speedmodSupplier.getAsDouble());
+        driveSubsystem.setModules( 
+                correctJoystickDrift(yDoubleSupplier.getAsDouble()) * Drive.Stats.kMaxVelocityMetersPerSecond,
+                correctJoystickDrift(xDoubleSupplier.getAsDouble()) * Drive.Stats.kMaxVelocityMetersPerSecond,
+                correctJoystickDrift(rotationDoubleSupplier.getAsDouble())
+                        * Drive.Stats.kMaxAngularVelocityRadiansPerSecond, speedmodSupplier.getAsDouble());
 
     }
 
     @Override
     public void end(boolean interrupted) {
-        m_driveSubsystem.setModules(0, 0, 0, 0);
+        driveSubsystem.setModules(0, 0, 0, 0);
     }
 
     // Returns true when the command should end.
