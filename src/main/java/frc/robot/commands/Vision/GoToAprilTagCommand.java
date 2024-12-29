@@ -34,8 +34,6 @@ public class GoToAprilTagCommand extends Command {
     public void initialize() {
         driveSubsystem.setSetpointArrivalX(1);
         driveSubsystem.setSetpointArrivalY(1);
-        this.targetVisible = false;
-        this.botPose = new double[6];
         this.driveSubsystem.yawRotationPIDSetPoint(0);
 
     }
@@ -43,18 +41,17 @@ public class GoToAprilTagCommand extends Command {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        if (targetVisible) {
-            double distanceX = driveSubsystem.updatePose.getX();
-            double distanceY = driveSubsystem.updatePose.getY();
-            double yawRotationNeededInDegrees = driveSubsystem.updatePose.getRotation().getDegrees();
-            // added -1 to stop 1 meter away from the apriltag
-            driveSubsystem.setSetpointArrivalX(distanceX);
-            driveSubsystem.setSetpointArrivalY(distanceY);
-            driveSubsystem.setModules(this.driveSubsystem.calculateArrivalSpeedWithXPID(distanceX),
-                    this.driveSubsystem.calculateArrivalSpeedWithYPID(distanceY),
-                    this.driveSubsystem.calculateYawRotationInPID(yawRotationNeededInDegrees),
-                    this.speedmodSupplier.getAsDouble());
-        }
+        double distanceX = driveSubsystem.updatePose.getX();
+        double distanceY = driveSubsystem.updatePose.getY();
+        double yawRotationNeededInDegrees = driveSubsystem.updatePose.getRotation().getDegrees();
+        // added -1 to stop 1 meter away from the apriltag
+        driveSubsystem.setSetpointArrivalX(distanceX);
+        driveSubsystem.setSetpointArrivalY(distanceY);
+        driveSubsystem.setModules(this.driveSubsystem.calculateArrivalSpeedWithXPID(distanceX),
+                this.driveSubsystem.calculateArrivalSpeedWithYPID(distanceY),
+                this.driveSubsystem.calculateYawRotationInPID(yawRotationNeededInDegrees),
+                this.speedmodSupplier.getAsDouble());
+
     }
 
     // Called once the command ends or is interrupted.
