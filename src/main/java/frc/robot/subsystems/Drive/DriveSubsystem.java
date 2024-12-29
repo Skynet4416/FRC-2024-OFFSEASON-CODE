@@ -25,95 +25,93 @@ import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.Constants.Drive;
 import frc.robot.subsystems.Drive.Swerve.*;
-import frc.robot.subsystems.Vision.Limelight.LimelightObserver;
 
-public class DriveSubsystem extends SubsystemBase implements LimelightObserver {
+public class DriveSubsystem extends SubsystemBase {
      // https://github.com/CrossTheRoadElec/Phoenix6-Examples/tree/main/java/SwerveWithPathPlanner
      // https://github.com/CrossTheRoadElec/SwerveDriveExample/blob/main/src/main/java/frc/robot/CTRSwerve/CTRSwerveModule.java
-     private final SwerveModule frontLeftModule;
-     private final SwerveModule frontRightModule;
-     private final SwerveModule backLeftModule;
-     private final SwerveModule backRightModule;
-     private final Pigeon2 pigeon;
-     private SwerveModulePosition[] modulePositions;
-     private final SwerveDriveOdometry odometry;
-     private final PIDController pidController;
-     private ChassisSpeeds swerveSpeeds;
-     private Pose2d lastPose;
-     private Pose2d updatePose;
-     private Pose2d currentPose;
-     private SwerveDrivePoseEstimator poseEstimator;
-     private double targetAngle;
+     private final SwerveModule m_frontLeftModule;
+     private final SwerveModule m_frontRightModule;
+     private final SwerveModule m_backLeftModule;
+     private final SwerveModule m_backRightModule;
+     private final Pigeon2 m_pigeon;
+     private SwerveModulePosition[] m_modulePositions;
+     private final SwerveDriveOdometry m_odometry;
+     private final PIDController m_pidController;
+     private ChassisSpeeds m_swerveSpeeds;
+     private Pose2d m_lastPose;
+     private Pose2d m_currentPose;
+     private SwerveDrivePoseEstimator m_poseEstimator;
+     private double m_targetAngle;
      private final Field2d field2d = new Field2d();
 
      public SwerveModule get_fl() {
-          return frontLeftModule;
+          return m_frontLeftModule;
      }
 
      public SwerveModule get_fr() {
-          return frontRightModule;
+          return m_frontRightModule;
      }
 
      public SwerveModule get_bl() {
-          return backLeftModule;
+          return m_backLeftModule;
      }
 
      public SwerveModule get_br() {
-          return backRightModule;
+          return m_backRightModule;
      }
 
      
 
      public DriveSubsystem() {
-          this.frontLeftModule = new SwerveModule(
+          this.m_frontLeftModule = new SwerveModule(
                     Drive.Motors.kFrontLeftDriveFalconCANID,
                     Drive.Motors.kFrontLeftSteerFalconCANID,
                     Drive.Encoders.kFrontLeftSteerEncoderCANID,
                     Drive.Stats.kFrontLeftModuleOffsetInDegrees, false);
-          this.frontRightModule = new SwerveModule(
+          this.m_frontRightModule = new SwerveModule(
                     Drive.Motors.kFrontRightDriveFalconCANID,
                     Drive.Motors.kFrontRightSteerFalconCANID,
                     Drive.Encoders.kFrontRightSteerEncoderCANID,
                     Drive.Stats.kFrontRightModuleOffsetInDegrees, true);
-          this.backLeftModule = new SwerveModule(
+          this.m_backLeftModule = new SwerveModule(
                     Drive.Motors.kBackLeftDriveFalconCANID,
                     Drive.Motors.kBackLeftSteerFalconCANID,
                     Drive.Encoders.kBackLeftSteerEncoderCANID,
                     Drive.Stats.kBackLeftModuleOffsetInDegrees, false);
-          this.backRightModule = new SwerveModule(
+          this.m_backRightModule = new SwerveModule(
                     Drive.Motors.kBackRightDriveFalconCANID,
                     Drive.Motors.kBackRightSteerFalconCANID,
                     Drive.Encoders.kBackRightSteerEncoderCANID,
                     Drive.Stats.kBackRightModuleOffsetInDegrees, false);
 
           
-          pigeon = new Pigeon2(Constants.Swerve.pigeonID);
-          pigeon.getConfigurator().apply(new Pigeon2Configuration());
-          pigeon.setYaw(0);
+          m_pigeon = new Pigeon2(Constants.Swerve.pigeonID);
+          m_pigeon.getConfigurator().apply(new Pigeon2Configuration());
+          m_pigeon.setYaw(0);
 
-          modulePositions = new SwerveModulePosition[] {
-                    new SwerveModulePosition(frontLeftModule.getVelocityMetersPerSecond(),
-                              frontLeftModule.getSteerAngle()),
-                    new SwerveModulePosition(frontRightModule.getVelocityMetersPerSecond(),
-                              frontRightModule.getSteerAngle()),
-                    new SwerveModulePosition(backLeftModule.getVelocityMetersPerSecond(),
-                              backLeftModule.getSteerAngle()),
-                    new SwerveModulePosition(backRightModule.getVelocityMetersPerSecond(),
-                              backRightModule.getSteerAngle())
+          m_modulePositions = new SwerveModulePosition[] {
+                    new SwerveModulePosition(m_frontLeftModule.getVelocityMetersPerSecond(),
+                              m_frontLeftModule.getSteerAngle()),
+                    new SwerveModulePosition(m_frontRightModule.getVelocityMetersPerSecond(),
+                              m_frontRightModule.getSteerAngle()),
+                    new SwerveModulePosition(m_backLeftModule.getVelocityMetersPerSecond(),
+                              m_backLeftModule.getSteerAngle()),
+                    new SwerveModulePosition(m_backRightModule.getVelocityMetersPerSecond(),
+                              m_backRightModule.getSteerAngle())
           };
 
-          odometry = new SwerveDriveOdometry(Drive.Stats.kinematics, Rotation2d.fromDegrees(getHeading()),
-                    modulePositions);
+          m_odometry = new SwerveDriveOdometry(Drive.Stats.kinematics, Rotation2d.fromDegrees(getHeading()),
+                    m_modulePositions);
 
-          swerveSpeeds = new ChassisSpeeds(0, 0, 0);
+          m_swerveSpeeds = new ChassisSpeeds(0, 0, 0);
 
-          currentPose = odometry.getPoseMeters(); // todo needs to take the position from vision
-          pidController = new PIDController(Drive.PID.kP, Drive.PID.kI, Drive.PID.kD);
-          pidController.enableContinuousInput(0, 360);
-          poseEstimator = new SwerveDrivePoseEstimator(Drive.Stats.kinematics, getGyroAngleInRotation2d(),
-                    modulePositions, currentPose);
-          lastPose = poseEstimator.getEstimatedPosition();
-          targetAngle = 90;
+          m_currentPose = m_odometry.getPoseMeters(); // todo needs to take the position from vision
+          m_pidController = new PIDController(Drive.PID.kP, Drive.PID.kI, Drive.PID.kD);
+          m_pidController.enableContinuousInput(0, 360);
+          m_poseEstimator = new SwerveDrivePoseEstimator(Drive.Stats.kinematics, getGyroAngleInRotation2d(),
+                    m_modulePositions, m_currentPose);
+          m_lastPose = m_poseEstimator.getEstimatedPosition();
+          m_targetAngle = 90;
 
           SmartDashboard.putNumber("Turn To angle I", Drive.PID.kI);
           SmartDashboard.putNumber("Turn To angle P", Drive.PID.kP);
@@ -127,10 +125,10 @@ public class DriveSubsystem extends SubsystemBase implements LimelightObserver {
       *                    WPILib's SwerveModuleState library
       */
      public void setModulesStates(SwerveModuleState[] moduleState) {
-          frontLeftModule.setModuleState(moduleState[0]);
-          frontRightModule.setModuleState(moduleState[1]);
-          backLeftModule.setModuleState(moduleState[2]);
-          backRightModule.setModuleState(moduleState[3]);
+          m_frontLeftModule.setModuleState(moduleState[0]);
+          m_frontRightModule.setModuleState(moduleState[1]);
+          m_backLeftModule.setModuleState(moduleState[2]);
+          m_backRightModule.setModuleState(moduleState[3]);
      }
 
      /**
@@ -140,7 +138,7 @@ public class DriveSubsystem extends SubsystemBase implements LimelightObserver {
       * @return
       */
      public SwerveDrivePoseEstimator getPoseEstimator() {
-          return this.poseEstimator;
+          return this.m_poseEstimator;
      }
 
      /**
@@ -149,7 +147,7 @@ public class DriveSubsystem extends SubsystemBase implements LimelightObserver {
       * @return
       */
      public SwerveDriveOdometry getOdometry() {
-          return odometry;
+          return m_odometry;
      }
 
      /**
@@ -157,7 +155,7 @@ public class DriveSubsystem extends SubsystemBase implements LimelightObserver {
       * updates the odometry
       */
      public void resetOdometry(Pose2d currentPose) {
-          odometry.resetPosition(pigeon.getRotation2d(), modulePositions, currentPose);
+          m_odometry.resetPosition(m_pigeon.getRotation2d(), m_modulePositions, currentPose);
      }
 
      /**
@@ -165,7 +163,7 @@ public class DriveSubsystem extends SubsystemBase implements LimelightObserver {
       * stuff from Yotam's branch it would replace this
       */
      public Pose2d getCurrentPose() {
-          return currentPose;
+          return m_currentPose;
      }
 
      /**
@@ -173,7 +171,7 @@ public class DriveSubsystem extends SubsystemBase implements LimelightObserver {
       * stuff from Yotam's branch it would replace this
       */
      public ChassisSpeeds getSwerveSpeeds() {
-          return swerveSpeeds;
+          return m_swerveSpeeds;
      }
 
      /**
@@ -231,20 +229,20 @@ public class DriveSubsystem extends SubsystemBase implements LimelightObserver {
           boolean correctAngle = true;
           if(Math.abs(xVelocityMps) > 0 || Math.abs(yVelocityMps) > 0 || Math.abs(rotationVelocityRps) > 0){
                if (correctAngle) {
-                    targetAngle += Units.radiansToDegrees(rotationVelocityRps)*1.5;
-                    this.swerveSpeeds = new ChassisSpeeds(xVelocityMpsFieldOriented, yVelocityMpsFieldOriented,
-                              Math.abs(this.getGyroAngleInRotation2d().getDegrees() - targetAngle) > Drive.PID.kThreshold ? -pidController.calculate(this.getGyroAngleInRotation2d().getDegrees()) : 0);
-                    pidController.setSetpoint(targetAngle-90);
+                    m_targetAngle += Units.radiansToDegrees(rotationVelocityRps)*1.5;
+                    this.m_swerveSpeeds = new ChassisSpeeds(xVelocityMpsFieldOriented, yVelocityMpsFieldOriented,
+                              Math.abs(this.getGyroAngleInRotation2d().getDegrees() - m_targetAngle) > Drive.PID.kThreshold ? -m_pidController.calculate(this.getGyroAngleInRotation2d().getDegrees()) : 0);
+                    m_pidController.setSetpoint(m_targetAngle-90);
                } else {
-                    this.swerveSpeeds = new ChassisSpeeds(xVelocityMpsFieldOriented, yVelocityMpsFieldOriented,
+                    this.m_swerveSpeeds = new ChassisSpeeds(xVelocityMpsFieldOriented, yVelocityMpsFieldOriented,
                               -rotationVelocityRps * 1.2);
                }
           } else {
-               this.swerveSpeeds = new ChassisSpeeds(0, 0, 0);
+               this.m_swerveSpeeds = new ChassisSpeeds(0, 0, 0);
           }
           // m_targetAngle = getGyroAngleInRotation2d().getDegrees();
 
-          SwerveModuleState[] target_states = Drive.Stats.kinematics.toSwerveModuleStates(this.swerveSpeeds);
+          SwerveModuleState[] target_states = Drive.Stats.kinematics.toSwerveModuleStates(this.m_swerveSpeeds);
           setModulesStates(target_states);
           System.out.println("xVelocity-"+xVelocityMps);
           System.out.println("yVelocity-"+yVelocityMps);
@@ -266,7 +264,7 @@ public class DriveSubsystem extends SubsystemBase implements LimelightObserver {
      }
 
      public double getTargetAngleInDegrees() {
-          return targetAngle;
+          return m_targetAngle;
      }
 
      /**
@@ -277,11 +275,11 @@ public class DriveSubsystem extends SubsystemBase implements LimelightObserver {
      }
 
      public double getHeading() {
-          return pigeon.getYaw().getValueAsDouble();
+          return m_pigeon.getYaw().getValueAsDouble();
      }
 
      public void resetGyroOffset(){
-          pigeon.setYaw(0);
+          m_pigeon.setYaw(0);
      }
 
      /**
@@ -294,20 +292,20 @@ public class DriveSubsystem extends SubsystemBase implements LimelightObserver {
 
      @Override
      public void periodic() {
-          poseEstimator.update(getGyroAngleInRotation2d(), modulePositions);
+          m_poseEstimator.update(getGyroAngleInRotation2d(), m_modulePositions);
 
-          modulePositions = new SwerveModulePosition[] {
-                    new SwerveModulePosition(frontLeftModule.getDriveDistance(), frontLeftModule.getSteerAngle()),
-                    new SwerveModulePosition(frontRightModule.getDriveDistance(), frontRightModule.getSteerAngle()),
-                    new SwerveModulePosition(backLeftModule.getDriveDistance(), backLeftModule.getSteerAngle()),
-                    new SwerveModulePosition(backRightModule.getDriveDistance(), backRightModule.getSteerAngle())
+          m_modulePositions = new SwerveModulePosition[] {
+                    new SwerveModulePosition(m_frontLeftModule.getDriveDistance(), m_frontLeftModule.getSteerAngle()),
+                    new SwerveModulePosition(m_frontRightModule.getDriveDistance(), m_frontRightModule.getSteerAngle()),
+                    new SwerveModulePosition(m_backLeftModule.getDriveDistance(), m_backLeftModule.getSteerAngle()),
+                    new SwerveModulePosition(m_backRightModule.getDriveDistance(), m_backRightModule.getSteerAngle())
           };
 
-          pidController.setP(SmartDashboard.getNumber("Turn To angle P", Drive.PID.kP));
-          pidController.setI(SmartDashboard.getNumber("Turn To angle I", Drive.PID.kI));
+          m_pidController.setP(SmartDashboard.getNumber("Turn To angle P", Drive.PID.kP));
+          m_pidController.setI(SmartDashboard.getNumber("Turn To angle I", Drive.PID.kI));
 
 
-          SmartDashboard.putNumber("absolute compass headeing", pigeon.getYaw().getValueAsDouble());
+          SmartDashboard.putNumber("absolute compass headeing", m_pigeon.getYaw().getValueAsDouble());
           // m_frontLeftModule.setModuleState(states[0]);
           // m_frontRightModule.setModuleState(states[1]);
           // m_backLeftModule.setModuleState(states[2]);
@@ -318,13 +316,5 @@ public class DriveSubsystem extends SubsystemBase implements LimelightObserver {
      @Override
      public void simulationPeriodic() {
           // This method will be called once per scheduler run during simulation
-     }
-
-     @Override
-     public void onLimelightDataUpdate(boolean targetVisible, double[] botPose) {
-          double x = botPose[0];
-          double y = botPose[1];
-          double rotationRadians = botPose[2];
-          updatePose = new Pose2d(x, y, new Rotation2d(rotationRadians));
      }
 }
