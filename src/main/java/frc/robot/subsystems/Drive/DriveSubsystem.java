@@ -338,6 +338,6 @@ public class DriveSubsystem extends SubsystemBase implements LimelightObserver {
           double x = botPose[0];
           double y = botPose[1];
           double rotationRadians = botPose[2];
-          updatePose = new Pose2d(x, y, new Rotation2d(rotationRadians));
+          updatePose = new Pose2d(x, y, Rotation2d.fromDegrees(rotationRadians));
      }
 }
