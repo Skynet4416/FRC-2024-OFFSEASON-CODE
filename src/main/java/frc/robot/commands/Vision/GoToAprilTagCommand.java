@@ -32,6 +32,8 @@ public class GoToAprilTagCommand extends Command {
     public void initialize() {
         this.targetVisible = false;
         this.botPose = new double[6];
+        this.driveSubsystem.yawRotationPIDSetPoint(0);
+
     }
  
     // Called every time the scheduler runs while the command is scheduled.
@@ -46,7 +48,6 @@ public class GoToAprilTagCommand extends Command {
             // double speedX =  distanceX * 0.1;
             // double speedY = distanceY * 0.1;
             
-            this.driveSubsystem.yawRotationPIDSetPoint(yawRotationNeededInDegrees);
             driveSubsystem.setModules(x,y,this.driveSubsystem.calculateYawRotationInPID(yawRotationNeededInDegrees), this.speedmodSupplier.getAsDouble());
         }
     }
