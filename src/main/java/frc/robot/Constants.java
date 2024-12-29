@@ -76,7 +76,22 @@ public final class Constants {
                  */
                 public static final double kD = 0.0;
             }
-
+            public static class ApriltagDriveX {
+               // took values from drive 
+                public static final double kP = 0.00035;
+      
+                public static final double kI = 0.000002;
+            
+                public static final double kD = 0.0;
+            }
+              public static class ApriltagDriveY {
+               // took values from drive 
+                public static final double kP = 0.00035;
+      
+                public static final double kI = 0.000002;
+            
+                public static final double kD = 0.0;
+            }
 
             
         public static class RotateToAprilTag {
