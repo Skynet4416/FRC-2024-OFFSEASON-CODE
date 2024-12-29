@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.Constants.Drive;
+import frc.robot.Constants.Swerve.PID;
 import frc.robot.subsystems.Drive.Swerve.*;
 
 public class DriveSubsystem extends SubsystemBase {
@@ -37,6 +38,7 @@ public class DriveSubsystem extends SubsystemBase {
      private SwerveModulePosition[] modulePositions;
      private final SwerveDriveOdometry odometry;
      private final PIDController pidController;
+     private final PIDController pidControllerRotation;
      private ChassisSpeeds swerveSpeeds;
      private Pose2d lastPose;
      private Pose2d currentPose;
@@ -107,6 +109,10 @@ public class DriveSubsystem extends SubsystemBase {
 
           currentPose = odometry.getPoseMeters(); // todo needs to take the position from vision
           pidController = new PIDController(Drive.PID.kP, Drive.PID.kI, Drive.PID.kD);
+          
+          //creates a pid controller for steering  
+          pidControllerRotation = new PIDController(PID.RotateToAprilTag.kP, PID.RotateToAprilTag.kI, PID.RotateToAprilTag.kD);
+
           pidController.enableContinuousInput(0, 360);
           poseEstimator = new SwerveDrivePoseEstimator(Drive.Stats.kinematics, getGyroAngleInRotation2d(),
                     modulePositions, currentPose);
@@ -151,7 +157,7 @@ public class DriveSubsystem extends SubsystemBase {
      }
 
      /**
-      * this is a function that recives the current position from the auto and
+      * this is a function that receives the current position from the auto and
       * updates the odometry
       */
      public void resetOdometry(Pose2d currentPose) {
@@ -280,6 +286,13 @@ public class DriveSubsystem extends SubsystemBase {
 
      public void resetGyroOffset(){
           pigeon.setYaw(0);
+     }
+
+     public void yawRotationPIDSetPoint(double desiredAngle){
+          pidControllerRotation.setSetpoint(desiredAngle);
+     }
+     public double calculateYawRotationInPID(double yawRotationNeededInDegrees){
+          return pidControllerRotation.calculate(yawRotationNeededInDegrees);
      }
 
      /**
