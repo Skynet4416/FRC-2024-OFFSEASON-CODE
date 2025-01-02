@@ -4,10 +4,7 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 
@@ -38,7 +35,6 @@ public final class Constants {
                  */
                 public static final double kP = 0.00035;
                 /**
-                 * 
                  * Integral tuning - learning
                  */
                 public static final double kI = 0.000002;
@@ -76,45 +72,35 @@ public final class Constants {
                  */
                 public static final double kD = 0.0;
             }
-            public static class ApriltagDriveX {
-               // took values from drive 
+
+            public static class ApriltagDrive {
+                // took values from drive
                 public static final double kP = 0.00035;
-      
+
                 public static final double kI = 0.000002;
-            
-                public static final double kD = 0.0;
-            }
-              public static class ApriltagDriveY {
-               // took values from drive 
-                public static final double kP = 0.00035;
-      
-                public static final double kI = 0.000002;
-            
+
                 public static final double kD = 0.0;
             }
 
-            
-        public static class RotateToAprilTag {
-                        /**
-             * Proportional tuning - error
-             */
-            public static final double kP = 10.0;
-            /**
-             * Integral tuning - learning
-             */
-            public static final double kI = 1.0;
-            /**
-             * Derivative tuning - overshoot
-             */
-            public static final double kD = 0.0;
+
+            public static class RotateToAprilTag {
+                /**
+                 * Proportional tuning - error
+                 */
+                public static final double kP = 10.0;
+                /**
+                 * Integral tuning - learning
+                 */
+                public static final double kI = 1.0;
+                /**
+                 * Derivative tuning - overshoot
+                 */
+                public static final double kD = 0.0;
+
+            }
+
 
         }
-
-        
-        }
-
-
-
 
 
         public static class Stats {
@@ -149,6 +135,7 @@ public final class Constants {
             public static final double wheelRadiusMeters = Units.inchesToMeters(kDriveWheelRadiusInches);
 
         }
+
         public static final int pigeonID = 26;
     }
 
@@ -162,8 +149,7 @@ public final class Constants {
         public static class Stats {
             // todo: set the speed needed, and everything in constants honestly
             public static final double kIntakeSpeed = -0.4;
-            public static final double kIntakeReverseSpeed = 0.4
-            ;
+            public static final double kIntakeReverseSpeed = 0.4;
             public static final double kPushingNodeInRounds = 1;
             public static final double kShooterSpeed = -0.05;
         }
@@ -194,11 +180,11 @@ public final class Constants {
             public static final double kDriveBaseRadius = Math
                     .sqrt(Math.pow(kTrackWidthMeters / 2.0, 2.0) + Math.pow(kWheelbaseMeters / 2.0, 2.0));
 
-                    // FL (0.957764 * 360) - 180
-                    // FR (0.951904 * 360) - 180
-                    // BL (0.055908 * 360) - 180
-                    // BR (0.201172 * 360) - 180
-                    
+            // FL (0.957764 * 360) - 180
+            // FR (0.951904 * 360) - 180
+            // BL (0.055908 * 360) - 180
+            // BR (0.201172 * 360) - 180
+
 
             /**
              * The current degree of the steer mechanism (At what degree does the drive
@@ -229,7 +215,7 @@ public final class Constants {
             public static final double kMaxDriveAccelRPM = 9000;
             public static final double kDriveEfficiency = 0.8;
             public static final double kMaxDriveMotorRPM = 6784.0;
-            public static final double kMaxVelocityMetersPerSecond = (kMaxDriveMotorRPM*kDriveEfficiency)*0.319/60/ Swerve.Stats.kRotorToSensorRatioDrive;
+            public static final double kMaxVelocityMetersPerSecond = (kMaxDriveMotorRPM * kDriveEfficiency) * 0.319 / 60 / Swerve.Stats.kRotorToSensorRatioDrive;
             public static final double kMaxAngularVelocityRadiansPerSecond = kMaxVelocityMetersPerSecond /
                     Math.hypot(kTrackWidthMeters / 2.0, kWheelbaseMeters / 2.0);
 
@@ -249,7 +235,7 @@ public final class Constants {
             public static final double kP = 0.0005;
             public static final double kI = 0.0;
             public static final double kD = 0.0;
-            public static final double kThreshold = 5; 
+            public static final double kThreshold = 5;
         }
 
         public static class Motors {
@@ -306,6 +292,6 @@ public final class Constants {
 
     // cool it's still here while the vision isn't.
     public static class AllRobot {
-            public static final int kAllMotorsLimitInAmpr = 30; // 
+        public static final int kAllMotorsLimitInAmpr = 30; //
     }
 }

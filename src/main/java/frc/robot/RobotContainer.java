@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import frc.robot.commands.Vision.GoToAprilTagCommand;
 import frc.robot.subsystems.Drive.DriveSubsystem;
 
 import java.util.ArrayList;
@@ -99,6 +100,7 @@ public class RobotContainer {
                 oi.xboxController::getLeftTriggerAxis));
 
         oi.commandXboxController.a().whileTrue(new ResetGyroCommand(m_driveSubsystem));
+        oi.commandXboxController.b().whileTrue(new GoToAprilTagCommand(m_driveSubsystem, oi.xboxController::getLeftTriggerAxis));
         // Arm.Stats.kIntakeAngle),
         // new IntakeNodeCommand(m_IntakeSubsystem, m_ShooterSubsystem)));
 
@@ -142,20 +144,4 @@ public class RobotContainer {
         // IntakeSpinUp(m_IntakeSubsystem, false).alongWith(new
         // FloorIntake(m_ArmSubsystem)));
     }
-
-    class InRangeSupplier implements BooleanSupplier {
-        @Override
-        public boolean getAsBoolean() {
-            return b;
-        }
-    }
-
-    InRangeSupplier inRangeSupplier = new InRangeSupplier();
-
-    public InRangeSupplier getInRange() {
-        return inRangeSupplier;
-    }
-
-    private boolean b = false;
-
 }

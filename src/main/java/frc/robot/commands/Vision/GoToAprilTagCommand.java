@@ -13,20 +13,16 @@ import frc.robot.subsystems.Vision.Limelight.LimelightObserver;
 import frc.robot.subsystems.Vision.Limelight.LimelightSubsystem;
 
 public class GoToAprilTagCommand extends Command {
-    @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
-    private final LimelightSubsystem limelightSubsystem;
+    @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
     private final DriveSubsystem driveSubsystem;
-    private boolean targetVisible;
-    private double[] botPose;
     private DoubleSupplier speedmodSupplier;
 
-    public GoToAprilTagCommand(LimelightSubsystem limelightSubsystem, DriveSubsystem driveSubsystem,
-            DoubleSupplier speedmodSupplier) {
-        this.limelightSubsystem = limelightSubsystem;
+    public GoToAprilTagCommand(DriveSubsystem driveSubsystem,
+                               DoubleSupplier speedmodSupplier) {
         this.driveSubsystem = driveSubsystem;
         this.speedmodSupplier = speedmodSupplier;
 
-        addRequirements(limelightSubsystem, driveSubsystem);
+        addRequirements(driveSubsystem);
     }
 
     // Called when the command is initially scheduled.
